@@ -1,1 +1,0 @@
-# finnoy-landa
