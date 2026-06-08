@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Finnøy-hytta</title>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
 
@@ -451,30 +449,17 @@
 <script>
 /* ============ CONFIG ============ */
 const COLORS = ['#b8623a','#3d5e4c','#2a5560','#8a5a99','#c79a3a','#5a7d9a','#a04848','#4a7c5e'];
-const FIREBASE_DB = 'https://finnoy-hytta-default-rtdb.europe-west1.firebasedatabase.app';
 
-// Firebase setup
-let db, bookingsRef;
-
-function initFirebase() {
-  const firebaseConfig = {
-    databaseURL: "https://finnoy-hytta-default-rtdb.europe-west1.firebasedatabase.app"
-  };
-  firebase.initializeApp(firebaseConfig);
-  db = firebase.database();
-  bookingsRef = db.ref('bookings');
-}
+/* ============ SUPABASE CONFIG ============ */
+const SUPABASE_URL = 'https://wccwhdnzhdfvshnskmbn.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_VJo98kEtjwYFO6yHWcvTSQ_YvQsqNBw';
 
 let bookings = [];
 let viewDate = new Date();
 viewDate.setDate(1);
 let selStart = null, selEnd = null, selColor = COLORS[0];
 
-
-/* ============ SUPABASE CONFIG ============ */
-const SUPABASE_URL = 'https://wccwhdnzhdfvshnskmbn.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_VJo98kEtjwYFO6yHWcvTSQ_YvQsqNBw';
-
+/* ============ STORAGE ============ */
 async function loadBookings() {
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/bookings?order=start_date.asc`, {
@@ -506,7 +491,6 @@ async function saveBookings() {
       note: b.note
     }));
     
-    // Delete old, insert new
     await fetch(`${SUPABASE_URL}/rest/v1/bookings`, {
       method: 'DELETE',
       headers: { 'apikey': SUPABASE_KEY }
