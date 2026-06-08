@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finnøy-hytta</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
+
+  :root {
+    --sea: #2a5560;
+    --sea-deep: #1a3b44;
+    --sea-light: #4a7c89;
+    --sand: #f4ede1;
+    --sand-dark: #e8dcc8;
+    --pine: #3d5e4c;
+    --rust: #b8623a;
+    --rust-light: #d4845f;
+    --cream: #faf6ee;
+    --ink: #243137;
+    --ink-soft: #5a6b71;
+    --line: rgba(36, 49, 55, 0.12);
+    --shadow: 0 4px 24px rgba(26, 59, 68, 0.08);
+    --shadow-lg: 0 12px 48px rgba(26, 59, 68, 0.14);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 { font-family: 'Fraunces', serif; font-weight: 500; line-height: 1.15; }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    min-height: 78vh;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    background: linear-gradient(160deg, #3a6470 0%, #1a3b44 55%, #14303a 100%);
+  }
+  .hero-art { position: absolute; inset: 0; overflow: hidden; }
+  .hero-art svg { width: 100%; height: 100%; object-fit: cover; }
+  .hero-grain {
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    padding: clamp(2rem, 5vw, 5rem);
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .hero .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: rgba(244, 237, 225, 0.75);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .hero .eyebrow::before {
+    content: ''; width: 36px; height: 1px; background: var(--rust-light);
+  }
+  .hero h1 {
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    color: var(--cream);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+  .hero h1 em { font-style: italic; color: var(--rust-light); }
+  .hero p {
+    color: rgba(244, 237, 225, 0.82);
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    max-width: 30rem;
+    margin-bottom: 2rem;
+  }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    background: var(--rust); color: var(--cream);
+    border: none; padding: 0.9rem 1.8rem;
+    font-family: 'Inter', sans-serif; font-weight: 500; font-size: 0.95rem;
+    border-radius: 100px; cursor: pointer;
+    transition: transform 0.25s ease, background 0.25s ease;
+  }
+  .hero-cta:hover { background: var(--rust-light); transform: translateY(-2px); }
+
+  /* ---------- LAYOUT ---------- */
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 clamp(1.2rem, 4vw, 5rem); }
+  section { padding: clamp(3rem, 7vw, 6rem) 0; }
+  .section-head { margin-bottom: 2.5rem; }
+  .section-head .eyebrow {
+    font-size: 0.74rem; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--rust); margin-bottom: 0.6rem; font-weight: 600;
+  }
+  .section-head h2 { font-size: clamp(1.9rem, 4vw, 2.8rem); color: var(--sea-deep); }
+  .section-head p { color: var(--ink-soft); margin-top: 0.6rem; max-width: 36rem; }
+
+  /* ---------- GALLERY ---------- */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 180px;
+    gap: 14px;
+  }
+  .photo {
+    position: relative; border-radius: 14px; overflow: hidden;
+    background: var(--sand-dark); cursor: pointer;
+    box-shadow: var(--shadow);
+  }
+  .photo.tall { grid-row: span 2; }
+  .photo.wide { grid-column: span 2; }
+  .photo img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
+  .photo:hover img { transform: scale(1.06); }
+  .photo .caption {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 1.2rem 1rem 0.8rem;
+    background: linear-gradient(transparent, rgba(26,59,68,0.78));
+    color: var(--cream); font-size: 0.82rem; font-weight: 500;
+    opacity: 0; transition: opacity 0.3s ease;
+  }
+  .photo:hover .caption { opacity: 1; }
+  .add-photo-hint {
+    margin-top: 1.2rem; font-size: 0.85rem; color: var(--ink-soft);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+
+  /* ---------- BOOKING GRID ---------- */
+  .booking-layout { display: grid; grid-template-columns: 1.6fr 1fr; gap: 2.5rem; align-items: start; }
+
+  .card {
+    background: var(--cream); border: 1px solid var(--line);
+    border-radius: 18px; padding: 1.6rem; box-shadow: var(--shadow);
+  }
+  .card.dark { background: var(--sea-deep); color: var(--cream); border: none; }
+
+  /* Calendar */
+  .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; }
+  .cal-head h3 { font-size: 1.4rem; color: var(--sea-deep); }
+  .cal-nav { display: flex; gap: 0.5rem; }
+  .cal-nav button {
+    width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--cream); cursor: pointer; color: var(--sea); font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s ease;
+  }
+  .cal-nav button:hover { background: var(--sand); }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+  .cal-dow {
+    text-align: center; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--ink-soft); padding: 0.4rem 0;
+  }
+  .cal-day {
+    aspect-ratio: 1; border-radius: 10px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; font-size: 0.9rem;
+    cursor: pointer; position: relative; border: 1px solid transparent;
+    transition: background 0.15s ease, border 0.15s ease;
+  }
+  .cal-day:hover:not(.empty):not(.past) { background: var(--sand); }
+  .cal-day.empty { cursor: default; }
+  .cal-day.past { color: rgba(36,49,55,0.28); cursor: default; }
+  .cal-day.today { font-weight: 600; border-color: var(--rust); }
+  .cal-day.booked { color: var(--cream); font-weight: 500; }
+  .cal-day.sel-start, .cal-day.sel-end, .cal-day.sel-mid {
+    background: var(--rust-light) !important; color: var(--cream); border-radius: 6px;
+  }
+  .cal-day .dot {
+    width: 5px; height: 5px; border-radius: 50%; margin-top: 2px;
+  }
+  .cal-legend { display: flex; flex-wrap: wrap; gap: 0.8rem 1.4rem; margin-top: 1.2rem; }
+  .cal-legend span { display: flex; align-items: center; gap: 0.45rem; font-size: 0.78rem; color: var(--ink-soft); }
+  .swatch { width: 12px; height: 12px; border-radius: 4px; }
+
+  /* Who's next */
+  .next-list { display: flex; flex-direction: column; gap: 0.9rem; margin-top: 0.3rem; }
+  .next-item {
+    display: flex; align-items: center; gap: 0.9rem;
+    padding: 0.8rem; border-radius: 12px; background: rgba(244,237,225,0.08);
+  }
+  .next-item.up-next { background: var(--rust); }
+  .avatar {
+    width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 0.95rem; color: var(--cream);
+  }
+  .next-meta { flex: 1; min-width: 0; }
+  .next-meta .who { font-weight: 600; font-size: 0.95rem; }
+  .next-meta .when { font-size: 0.8rem; opacity: 0.78; }
+  .next-meta .countdown { font-size: 0.72rem; opacity: 0.7; margin-top: 1px; }
+  .empty-state { text-align: center; padding: 2rem 1rem; opacity: 0.7; font-size: 0.9rem; }
+
+  /* Upcoming full list */
+  .bookings-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+  .bookings-table th {
+    text-align: left; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 600; padding: 0.6rem 0.4rem; border-bottom: 1px solid var(--line);
+  }
+  .bookings-table td { padding: 0.8rem 0.4rem; border-bottom: 1px solid var(--line); font-size: 0.9rem; vertical-align: middle; }
+  .pill { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; font-weight: 500; }
+  .pill .avatar { width: 28px; height: 28px; font-size: 0.72rem; }
+  .del-btn {
+    border: none; background: transparent; color: var(--ink-soft); cursor: pointer;
+    padding: 0.3rem 0.5rem; border-radius: 8px; font-size: 0.85rem; transition: all 0.2s ease;
+  }
+  .del-btn:hover { background: rgba(184,98,58,0.12); color: var(--rust); }
+
+  /* ---------- MODAL ---------- */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(26,59,68,0.55);
+    display: none; align-items: center; justify-content: center; z-index: 50;
+    padding: 1.5rem; backdrop-filter: blur(3px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--cream); border-radius: 20px; padding: 2rem;
+    max-width: 440px; width: 100%; box-shadow: var(--shadow-lg);
+    animation: pop 0.25s ease;
+  }
+  @keyframes pop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal h3 { font-size: 1.6rem; color: var(--sea-deep); margin-bottom: 0.3rem; }
+  .modal .sub { color: var(--ink-soft); font-size: 0.9rem; margin-bottom: 1.4rem; }
+  .field { margin-bottom: 1.1rem; }
+  .field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--sea-deep); margin-bottom: 0.4rem; letter-spacing: 0.02em; }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 0.7rem 0.85rem; border: 1px solid var(--line);
+    border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 0.92rem;
+    background: #fff; color: var(--ink); transition: border 0.2s ease;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--sea-light); }
+  .field textarea { resize: vertical; min-height: 60px; }
+  .dates-row { display: flex; gap: 0.8rem; }
+  .dates-row .field { flex: 1; }
+  .color-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .color-swatch {
+    width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+    border: 3px solid transparent; transition: transform 0.15s ease;
+  }
+  .color-swatch:hover { transform: scale(1.12); }
+  .color-swatch.sel { border-color: var(--ink); }
+  .modal-actions { display: flex; gap: 0.8rem; margin-top: 1.6rem; }
+  .btn {
+    flex: 1; padding: 0.8rem; border-radius: 10px; font-family: 'Inter', sans-serif;
+    font-weight: 500; font-size: 0.92rem; cursor: pointer; border: none; transition: all 0.2s ease;
+  }
+  .btn-primary { background: var(--rust); color: var(--cream); }
+  .btn-primary:hover { background: var(--rust-light); }
+  .btn-ghost { background: transparent; color: var(--ink-soft); border: 1px solid var(--line); }
+  .btn-ghost:hover { background: var(--sand); }
+  .modal-err { color: var(--rust); font-size: 0.82rem; margin-top: -0.6rem; margin-bottom: 1rem; display: none; }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    background: var(--sea-deep); color: rgba(244,237,225,0.7);
+    text-align: center; padding: 2.5rem 1rem; font-size: 0.85rem;
+    margin-top: 2rem;
+  }
+  footer .mark { font-family: 'Fraunces', serif; color: var(--cream); font-size: 1.3rem; margin-bottom: 0.4rem; }
+
+  .loading { text-align: center; padding: 2rem; color: var(--ink-soft); font-size: 0.9rem; }
+  .toast {
+    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(120%);
+    background: var(--sea-deep); color: var(--cream); padding: 0.85rem 1.5rem;
+    border-radius: 100px; font-size: 0.88rem; box-shadow: var(--shadow-lg);
+    z-index: 60; transition: transform 0.35s cubic-bezier(.2,.8,.2,1);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 880px) {
+    .booking-layout { grid-template-columns: 1fr; }
+    .gallery { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 150px; }
+    .photo.wide { grid-column: span 2; }
+  }
+  @media (max-width: 520px) {
+    .gallery { grid-template-columns: 1fr; }
+    .photo.wide, .photo.tall { grid-column: auto; grid-row: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-art">
+    <svg viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#3a6470"/>
+          <stop offset="100%" stop-color="#1a3b44"/>
+        </linearGradient>
+        <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#27505c"/>
+          <stop offset="100%" stop-color="#14303a"/>
+        </linearGradient>
+      </defs>
+      <rect width="1440" height="800" fill="url(#sky)"/>
+      <circle cx="1130" cy="180" r="60" fill="#f4ede1" opacity="0.85"/>
+      <circle cx="1130" cy="180" r="90" fill="#f4ede1" opacity="0.08"/>
+      <path d="M0 430 Q 220 360 460 410 T 920 400 T 1440 420 L1440 800 L0 800Z" fill="#234a54" opacity="0.6"/>
+      <path d="M0 470 Q 300 410 640 460 T 1240 455 T 1440 470 L1440 800 L0 800Z" fill="#1d4049" opacity="0.8"/>
+      <rect y="500" width="1440" height="300" fill="url(#water)"/>
+      <ellipse cx="1130" cy="560" rx="40" ry="120" fill="#f4ede1" opacity="0.07"/>
+      <g fill="#16323a">
+        <path d="M180 500 l34 0 -17 -52 Z M180 470 l34 0 -17 -48 Z M180 444 l34 0 -17 -44 Z M194 500 h6 v18 h-6Z"/>
+        <path d="M240 505 l28 0 -14 -44 Z M240 480 l28 0 -14 -40 Z M251 505 h6 v16 h-6Z"/>
+      </g>
+      <g transform="translate(560 360)">
+        <rect x="0" y="60" width="220" height="120" fill="#b8623a"/>
+        <rect x="0" y="60" width="220" height="120" fill="#000" opacity="0.06"/>
+        <path d="M-20 62 L110 -10 L240 62 Z" fill="#8d4426"/>
+        <rect x="30" y="95" width="42" height="42" fill="#f4ede1" opacity="0.9"/>
+        <rect x="30" y="95" width="42" height="42" fill="none" stroke="#8d4426" stroke-width="3"/>
+        <line x1="51" y1="95" x2="51" y2="137" stroke="#8d4426" stroke-width="3"/>
+        <line x1="30" y1="116" x2="72" y2="116" stroke="#8d4426" stroke-width="3"/>
+        <rect x="148" y="98" width="36" height="82" fill="#5a3520"/>
+        <rect x="100" y="0" width="18" height="40" fill="#6b3a22"/>
+      </g>
+      <path d="M0 640 Q 120 600 260 645 Q 400 690 520 650 L520 800 L0 800Z" fill="#102b32"/>
+      <path d="M820 660 Q 1000 615 1180 660 Q 1320 695 1440 655 L1440 800 L820 800Z" fill="#102b32"/>
+    </svg>
+  </div>
+  <div class="hero-grain"></div>
+  <div class="hero-inner">
+    <div class="eyebrow">Familiehytte · Finnøy</div>
+    <h1>På <em>hytta</em></h1>
+    <p>Stedet vårt ved sjøen på Finnøy. Se hvem som kommer, bla i bildene, og book oppholdet ditt.</p>
+    <button class="hero-cta" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">
+      Book hytta
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Stedet</div>
+      <h2>Noen glimt fra hytta</h2>
+      <p>Bytt ut disse med egne bilder — se notatet under for å legge til ekte bilder.</p>
+    </div>
+    <div class="gallery" id="gallery-grid"></div>
+    <div class="add-photo-hint">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+      Tips: send meg dine egne hyttebilder, så legger jeg dem rett inn i galleriet.
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING -->
+<section id="booking" style="background: var(--sand);">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Reservasjoner</div>
+      <h2>Book oppholdet ditt</h2>
+      <p>Velg datoer i kalenderen, velg hvem som kommer, og ferdig. Alle ser den samme kalenderen.</p>
+    </div>
+
+    <div class="booking-layout">
+      <!-- Calendar card -->
+      <div class="card">
+        <div class="cal-head">
+          <h3 id="cal-title">Måned</h3>
+          <div class="cal-nav">
+            <button id="prev-month" aria-label="Forrige måned">‹</button>
+            <button id="next-month" aria-label="Neste måned">›</button>
+          </div>
+        </div>
+        <div class="cal-grid" id="cal-dow"></div>
+        <div class="cal-grid" id="cal-days" style="margin-top:5px;"></div>
+        <div class="cal-legend" id="cal-legend"></div>
+      </div>
+
+      <!-- Who's next card -->
+      <div class="card dark">
+        <h3 style="font-size:1.4rem; color:var(--cream); margin-bottom:0.3rem;">Hvem er neste</h3>
+        <p style="font-size:0.85rem; opacity:0.7; margin-bottom:1.2rem;">Kommende opphold i rekkefølge</p>
+        <div class="next-list" id="next-list">
+          <div class="loading" style="color:rgba(244,237,225,0.6)">Laster…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full upcoming list -->
+    <div class="card" style="margin-top:2rem;">
+      <h3 style="font-size:1.3rem; color:var(--sea-deep); margin-bottom:0.3rem;">Alle bookinger</h3>
+      <p style="font-size:0.85rem; color:var(--ink-soft); margin-bottom:1rem;">Tidligere opphold skjules automatisk.</p>
+      <div id="bookings-wrap"><div class="loading">Laster…</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="mark">Finnøy-hytta</div>
+  <div>Laget for familien · Vi sees ved sjøen</div>
+</footer>
+
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3>Ny booking</h3>
+    <p class="sub" id="modal-sub">Reserver hytta</p>
+    <div class="field">
+      <label>Hvem skal være der?</label>
+      <input type="text" id="f-name" placeholder="f.eks. Mamma & Pappa" maxlength="40">
+    </div>
+    <div class="dates-row">
+      <div class="field">
+        <label>Ankomst</label>
+        <input type="date" id="f-start">
+      </div>
+      <div class="field">
+        <label>Avreise</label>
+        <input type="date" id="f-end">
+      </div>
+    </div>
+    <div class="field">
+      <label>Fargemerke</label>
+      <div class="color-row" id="color-row"></div>
+    </div>
+    <div class="field">
+      <label>Notat (valgfritt)</label>
+      <textarea id="f-note" placeholder="Tar med hunden, kommer sent fredag…" maxlength="120"></textarea>
+    </div>
+    <div class="modal-err" id="modal-err"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="modal-cancel">Avbryt</button>
+      <button class="btn btn-primary" id="modal-save">Lagre booking</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ CONFIG ============ */
+const COLORS = ['#b8623a','#3d5e4c','#2a5560','#8a5a99','#c79a3a','#5a7d9a','#a04848','#4a7c5e'];
+const FIREBASE_DB = 'https://finnoy-hytta-default-rtdb.europe-west1.firebasedatabase.app';
+
+let bookings = [];
+let viewDate = new Date();
+viewDate.setDate(1);
+let selStart = null, selEnd = null, selColor = COLORS[0];
+
+/* ============ FIREBASE REST API ============ */
+async function loadBookings() {
+  try {
+    const res = await fetch(`${FIREBASE_DB}/bookings.json`);
+    const data = await res.json();
+    bookings = data && typeof data === 'object' ? Object.values(data) : [];
+    bookings.sort((a,b) => a.start.localeCompare(b.start));
+  } catch (e) {
+    console.error('Load error:', e);
+    bookings = [];
+  }
+}
+
+async function saveBookings() {
+  try {
+    const bookingsObj = {};
+    bookings.forEach(b => { bookingsObj[b.id] = b; });
+    const res = await fetch(`${FIREBASE_DB}/bookings.json`, {
+      method: 'PUT',
+      body: JSON.stringify(bookingsObj)
+    });
+    if (!res.ok) throw new Error('Save failed');
+  } catch (e) {
+    console.error('Save error:', e);
+    showToast('Kunne ikke lagre — prøv igjen');
+  }
+}
+
+/* ============ HELPERS ============ */
+function todayStr() { const d = new Date(); return d.toISOString().slice(0,10); }
+function fmtDate(s) {
+  const d = new Date(s + 'T00:00:00');
+  return d.toLocaleDateString('nb-NO', { day:'numeric', month:'short' });
+}
+function fmtRange(a,b) {
+  const da = new Date(a+'T00:00:00'), db = new Date(b+'T00:00:00');
+  const optsSame = { day:'numeric' }, optsFull = { day:'numeric', month:'short' };
+  if (da.getMonth() === db.getMonth() && da.getFullYear() === db.getFullYear())
+    return da.toLocaleDateString('nb-NO',optsSame) + '.–' + db.toLocaleDateString('nb-NO',optsFull);
+  return da.toLocaleDateString('nb-NO',optsFull) + ' – ' + db.toLocaleDateString('nb-NO',optsFull);
+}
+function nights(a,b) {
+  const ms = new Date(b+'T00:00:00') - new Date(a+'T00:00:00');
+  return Math.max(1, Math.round(ms / 86400000));
+}
+function daysUntil(s) {
+  const ms = new Date(s+'T00:00:00') - new Date(todayStr()+'T00:00:00');
+  return Math.round(ms / 86400000);
+}
+function initials(name) {
+  const parts = name.trim().split(/[\s&]+/).filter(Boolean);
+  if (parts.length === 1) return parts[0].slice(0,2).toUpperCase();
+  return (parts[0][0] + parts[1][0]).toUpperCase();
+}
+function overlaps(s1,e1,s2,e2) { return s1 < e2 && s2 < e1; }
+function dateAddStr(s, days) {
+  const d = new Date(s+'T00:00:00'); d.setDate(d.getDate()+days);
+  return d.toISOString().slice(0,10);
+}
+
+/* ============ CALENDAR RENDER ============ */
+function renderCalendar() {
+  const dowWrap = document.getElementById('cal-dow');
+  if (!dowWrap.children.length) {
+    ['Man','Tir','Ons','Tor','Fre','Lør','Søn'].forEach(d => {
+      const el = document.createElement('div'); el.className = 'cal-dow'; el.textContent = d;
+      dowWrap.appendChild(el);
+    });
+  }
+
+  document.getElementById('cal-title').textContent =
+    viewDate.toLocaleDateString('nb-NO', { month:'long', year:'numeric' });
+
+  const grid = document.getElementById('cal-days');
+  grid.innerHTML = '';
+  const year = viewDate.getFullYear(), month = viewDate.getMonth();
+  const first = new Date(year, month, 1);
+  let lead = (first.getDay() + 6) % 7;
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const today = todayStr();
+
+  for (let i=0;i<lead;i++){ const e=document.createElement('div'); e.className='cal-day empty'; grid.appendChild(e); }
+
+  for (let d=1; d<=daysInMonth; d++) {
+    const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const cell = document.createElement('div');
+    cell.className = 'cal-day';
+    cell.dataset.date = ds;
+
+    const num = document.createElement('span'); num.textContent = d; cell.appendChild(num);
+
+    if (ds < today) cell.classList.add('past');
+    if (ds === today) cell.classList.add('today');
+
+    const b = bookings.find(bk => ds >= bk.start && ds < bk.end);
+    if (b) {
+      cell.style.background = b.color;
+      cell.classList.add('booked');
+      cell.title = b.name;
+    }
+
+    if (selStart && selEnd) {
+      if (ds >= selStart && ds < selEnd) {
+        cell.classList.add(ds === selStart ? 'sel-start' : 'sel-mid');
+      }
+    } else if (selStart && ds === selStart) {
+      cell.classList.add('sel-start');
+    }
+
+    if (ds >= today) {
+      cell.addEventListener('click', () => onDayClick(ds, b));
+    }
+    grid.appendChild(cell);
+  }
+  renderLegend();
+}
+
+function renderLegend() {
+  const wrap = document.getElementById('cal-legend');
+  wrap.innerHTML = '';
+  const items = [
+    ['var(--rust)','I dag (ramme)'],
+    ['var(--rust-light)','Ditt valg']
+  ];
+  const seen = new Set();
+  bookings.forEach(b => {
+    if (b.end > todayStr() && !seen.has(b.name)) {
+      seen.add(b.name);
+      items.push([b.color, b.name]);
+    }
+  });
+  items.slice(0,8).forEach(([c,label]) => {
+    const s = document.createElement('span');
+    s.innerHTML = `<span class="swatch" style="background:${c.startsWith('var')?c:c}"></span>${label}`;
+    wrap.appendChild(s);
+  });
+}
+
+function onDayClick(ds, existing) {
+  if (existing) {
+    openManage(existing);
+    return;
+  }
+  if (!selStart || (selStart && selEnd)) {
+    selStart = ds; selEnd = null;
+  } else {
+    if (ds <= selStart) { selStart = ds; selEnd = null; }
+    else { selEnd = ds; openModal(); }
+  }
+  renderCalendar();
+}
+
+/* ============ WHO'S NEXT + LIST ============ */
+function renderNext() {
+  const wrap = document.getElementById('next-list');
+  const today = todayStr();
+  const upcoming = bookings.filter(b => b.end > today).sort((a,b)=>a.start.localeCompare(b.start));
+  if (!upcoming.length) {
+    wrap.innerHTML = '<div class="empty-state" style="color:rgba(244,237,225,0.7)">Ingen opphold booket ennå.<br>Vær den første!</div>';
+    return;
+  }
+  wrap.innerHTML = '';
+  upcoming.slice(0,5).forEach((b,i) => {
+    const du = daysUntil(b.start);
+    let cd;
+    if (du <= 0 && b.start <= today) cd = 'Er der nå';
+    else if (du === 0) cd = 'Ankommer i dag';
+    else if (du === 1) cd = 'I morgen';
+    else cd = `Om ${du} dager`;
+    const item = document.createElement('div');
+    item.className = 'next-item' + (i===0 ? ' up-next' : '');
+    item.innerHTML = `
+      <div class="avatar" style="background:${b.color}">${initials(b.name)}</div>
+      <div class="next-meta">
+        <div class="who">${escapeHtml(b.name)}</div>
+        <div class="when">${fmtRange(b.start,b.end)} · ${nights(b.start,b.end)} ${nights(b.start,b.end)>1?'netter':'natt'}</div>
+        <div class="countdown">${cd}</div>
+      </div>`;
+    wrap.appendChild(item);
+  });
+}
+
+function renderTable() {
+  const wrap = document.getElementById('bookings-wrap');
+  const today = todayStr();
+  const upcoming = bookings.filter(b => b.end > today).sort((a,b)=>a.start.localeCompare(b.start));
+  if (!upcoming.length) {
+    wrap.innerHTML = '<div class="empty-state">Ingen kommende bookinger.</div>';
+    return;
+  }
+  let html = '<table class="bookings-table"><thead><tr><th>Gjest</th><th>Datoer</th><th>Netter</th><th>Notat</th><th></th></tr></thead><tbody>';
+  upcoming.forEach(b => {
+    html += `<tr>
+      <td><span class="pill"><span class="avatar" style="background:${b.color}">${initials(b.name)}</span>${escapeHtml(b.name)}</span></td>
+      <td>${fmtRange(b.start,b.end)}</td>
+      <td>${nights(b.start,b.end)}</td>
+      <td style="color:var(--ink-soft);max-width:200px;">${b.note?escapeHtml(b.note):'—'}</td>
+      <td style="text-align:right;"><button class="del-btn" data-id="${b.id}">Avbestill</button></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('.del-btn').forEach(btn => {
+    btn.addEventListener('click', () => removeBooking(btn.dataset.id));
+  });
+}
+
+function escapeHtml(s){ return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ============ MODAL ============ */
+function buildColorRow() {
+  const row = document.getElementById('color-row');
+  row.innerHTML = '';
+  COLORS.forEach(c => {
+    const s = document.createElement('div');
+    s.className = 'color-swatch' + (c===selColor?' sel':'');
+    s.style.background = c;
+    s.addEventListener('click', () => {
+      selColor = c;
+      row.querySelectorAll('.color-swatch').forEach(x=>x.classList.remove('sel'));
+      s.classList.add('sel');
+    });
+    row.appendChild(s);
+  });
+}
+
+function openModal() {
+  document.getElementById('f-start').value = selStart || '';
+  document.getElementById('f-end').value = selEnd || (selStart ? dateAddStr(selStart,1) : '');
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-note').value = '';
+  document.getElementById('modal-err').style.display = 'none';
+  document.getElementById('modal-sub').textContent =
+    (selStart && selEnd) ? `${fmtRange(selStart, selEnd)} · ${nights(selStart,selEnd)} ${nights(selStart,selEnd)>1?'netter':'natt'}` : 'Reserver hytta';
+  selColor = COLORS[bookings.length % COLORS.length];
+  buildColorRow();
+  document.getElementById('modal').classList.add('open');
+  setTimeout(()=>document.getElementById('f-name').focus(), 50);
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+async function saveBooking() {
+  const name = document.getElementById('f-name').value.trim();
+  const start = document.getElementById('f-start').value;
+  const end = document.getElementById('f-end').value;
+  const note = document.getElementById('f-note').value.trim();
+  const err = document.getElementById('modal-err');
+  function fail(m){ err.textContent = m; err.style.display='block'; }
+
+  if (!name) return fail('Legg til et navn.');
+  if (!start || !end) return fail('Velg begge datoene.');
+  if (end <= start) return fail('Avreise må være etter ankomst.');
+
+  const clash = bookings.find(b => overlaps(start, end, b.start, b.end));
+  if (clash) return fail(`Overlapper med ${clash.name} sitt opphold (${fmtRange(clash.start, clash.end)}).`);
+
+  bookings.push({ id: 'b'+Date.now()+Math.random().toString(36).slice(2,6), name, start, end, note, color: selColor });
+  bookings.sort((a,b)=>a.start.localeCompare(b.start));
+  await saveBookings();
+  selStart = null; selEnd = null;
+  closeModal();
+  renderAll();
+  showToast(`Booket for ${name} 🎉`);
+}
+
+function openManage(b) {
+  if (confirm(`${b.name}\n${fmtRange(b.start,b.end)} · ${nights(b.start,b.end)} ${nights(b.start,b.end)>1?'netter':'natt'}${b.note?'\n\nNotat: '+b.note:''}\n\nAvbestille denne bookingen?`)) {
+    removeBooking(b.id);
+  }
+}
+
+async function removeBooking(id) {
+  const b = bookings.find(x=>x.id===id);
+  if (!b) return;
+  if (!confirm(`Avbestille ${b.name} sitt opphold (${fmtRange(b.start,b.end)})?`)) return;
+  bookings = bookings.filter(x=>x.id!==id);
+  await saveBookings();
+  renderAll();
+  showToast('Booking avbestilt');
+}
+
+/* ============ GALLERY ============ */
+const PHOTO_SLOTS = [
+  { cls:'wide', label:'Hytta utvendig' },
+  { cls:'tall', label:'Solnedgang' },
+  { cls:'', label:'Stua' },
+  { cls:'', label:'Peisen' },
+  { cls:'', label:'Utsikten' },
+];
+function renderGallery() {
+  const grid = document.getElementById('gallery-grid');
+  grid.innerHTML = '';
+  PHOTO_SLOTS.forEach(slot => {
+    const fig = document.createElement('div');
+    fig.className = 'photo ' + slot.cls;
+    fig.innerHTML = `
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;color:#2a5560;background:#f4ede1;border:2px dashed #e8dcc8;border-radius:14px;">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span style="font-size:0.78rem;letter-spacing:0.04em;">${slot.label}</span>
+      </div>
+      <div class="caption">${slot.label}</div>`;
+    grid.appendChild(fig);
+  });
+}
+
+/* ============ TOAST ============ */
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+/* ============ INIT ============ */
+function renderAll(){ renderCalendar(); renderNext(); renderTable(); }
+
+document.getElementById('prev-month').addEventListener('click', ()=>{ viewDate.setMonth(viewDate.getMonth()-1); renderCalendar(); });
+document.getElementById('next-month').addEventListener('click', ()=>{ viewDate.setMonth(viewDate.getMonth()+1); renderCalendar(); });
+document.getElementById('modal-cancel').addEventListener('click', ()=>{ closeModal(); selStart=null; selEnd=null; renderCalendar(); });
+document.getElementById('modal-save').addEventListener('click', saveBooking);
+document.getElementById('modal').addEventListener('click', e=>{ if(e.target.id==='modal'){ closeModal(); selStart=null; selEnd=null; renderCalendar(); } });
+document.getElementById('f-start').addEventListener('change', e=>{ selStart=e.target.value; });
+document.getElementById('f-end').addEventListener('change', e=>{ selEnd=e.target.value; });
+
+(async function init(){
+  renderGallery();
+  await loadBookings();
+  renderAll();
+})();
+</script>
+</body>
+</html>
